@@ -4,5 +4,5 @@ author: Matthias Orlikowski
 abstract: This is the Abstract
 documentclass: article
 # This is a hack to get \documentclass [twocolumn]{article} in the LaTex source
-fontsize: twocolumn
+#fontsize: twocolumn
 ---
