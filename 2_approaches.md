@@ -3,13 +3,17 @@
 - What are core features and design principles underlying these
 models?
 
-Both pipeline and joint inference approaches conceive relation extraction as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". For each type of model I will present where they take this general approach, giving an overview of their core ideas and architecture to highlight how each relates the subtasks of relation extraction.
+Both presented approaches conceive relation extraction as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging entity mentions with a label indicating the type of entity that they refer to.  or pairs of mentions are to be labeled as as coreferent or not, i.e.
+
+relations vs relation instances (section 3)
+
+For each type of model I will present where they take this general approach, giving an overview of their core ideas and architecture to highlight how each relates the subtasks of relation extraction.
 
 ## Pipeline
 
 Mintz et al. (2009) present a pipeline approach to relation extraction, which is build on the concept of *distant supervision*. In contrast to regular supervised classification, which uses labeled text data to train a classifier, distant supervision does not directly train on prelabeled text. Instead a knowledge base is used to identify entities, whose relation is known, in unlabeled text and use these relation instances to train a classification model which assigns entity pairs to relation labels. Mintz et al. (2009) use the Freebase knowledge base (now acquired and integrated into other services, cf. Google 2014), which unifies structured semantic data from multiple sources, e.g. Wikipedia and MusicBrainz (music database). The authors claim that this has the advantage of being able to use more data and instances, as they do not have to be labeled manually, also allowing the system to be easily trained for different domains. Additionally, as relation names come from an existing knowledge base, they tend to be more canonical than ad-hoc defined ones.
 
-relations vs relation instances (section 3)
+
 
 ### Principle design and classification model
 
@@ -61,6 +65,7 @@ Features - Consequences
 - Features are very complex because they are combined from all sentences
 - High precision vs. low recall
 
+<!---
 ### Training
 
 Implementation
@@ -75,7 +80,7 @@ classifier needs to see negative data in training:
  - randomly select entity pairs not included in any Freebase relation (accepting false negatives)
  - build feature vector for 'unrelated' relation from these entities
  - random 1% sample of unrelated entities as negative samples (by contrast 98.7% of extracted entities are unrelated)
-
+-->
 ### Evaluation
 Test Step
 
@@ -104,6 +109,24 @@ Test Step
 
 ## Joint inference
 
-- factor graph
-Joint Inference of Entities, Relations, and Coreference
-(Singh et al. 2013)
+Singh et al. 2013
+
+### Principle design and classification model
+
+What are graphical models?
+
+Describe the isolated and joint graphical models
+
+- entity recognition
+- relation extraction
+- coreference resolution
+
+### Features and learning
+
+Problem of inference in "loopy" graphical model
+
+Do they use the same features as Mintz et al.?
+
+### Evaluation
+
+Isolated models vs joint model
