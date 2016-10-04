@@ -1,13 +1,10 @@
 # Approaches
-- Which (classes of) models are used to tackle the problem?
-- What are core features and design principles underlying these
-models?
 
-Both presented approaches conceive relation extraction as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging entity mentions with a label indicating the type of entity that they refer to.  or pairs of mentions are to be labeled as as coreferent or not, i.e.
+Relation extraction is commonly conceptualized as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging possible entity mentions with a label indicating the type of entity that they refer to. Similarly, in anaphora resolution pairs of mentions are to be labeled as as coreferent or not.
+
+For both pipeline and joint models I will present where the authors take this general approach, giving an overview of their core ideas and architecture to highlight how they relate the subtasks of relation extraction.
 
 relations vs relation instances (section 3)
-
-For each type of model I will present where they take this general approach, giving an overview of their core ideas and architecture to highlight how each relates the subtasks of relation extraction.
 
 ## Pipeline
 
@@ -78,7 +75,14 @@ What are graphical models?
 Describe the isolated and joint graphical models
 
 - entity recognition
+
+features from Ratinov and Roth (2009)
+
+
 - relation extraction
+
+features from Zhou et al. 2005
+
 - coreference resolution
 
 ### Features and training
@@ -87,6 +91,6 @@ Problem of inference in "loopy" graphical model
 
 Do they use the same features as Mintz et al.?
 
-### Evaluation
+<!-- ### Evaluation
 
-Isolated models vs joint model
+Isolated models vs joint model -->
