@@ -1,5 +1,8 @@
 # Literature
 
+Lin 1998
+
+Finkel et al. 2005
 
 Joint Inference of Entities, Relations, and Coreference
 (Singh et al. 2013)
