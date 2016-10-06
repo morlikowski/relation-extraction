@@ -72,7 +72,30 @@ Singh et al. 2013
 
 What are graphical models?
 
+https://www.coursera.org/learn/probabilistic-graphical-models/resources/7ct5V
+
+model (declarative representation separates model and algorithm)
+*probabilistic* (deal with uncertainty due to noise, partial knowledge, phenomena not covered)
+probability theory and statistics gives clear representation of uncertainty, tools to reason about these and learn
+from data.
+*graphical* computer science, probability distributions over a large number of random variables (each capturing to one aspect of the world), joint distribution of these variables are exponentially large, so suitable data structures are necessary, random variables as nodes.
+
+directed (Bayesian) and undirected (Markov) graphs
+
+
+
+factor graph that splits the probability distribution of a label given a set of
+features.
+
+factors are functions that map a set of random variables to a real value
+
 Describe the isolated and joint graphical models
+
+"unnormalized joint probability distribution over all three tasks"
+
+"bi-directional information flow between the tasks"
+
+
 
 - entity recognition
 
