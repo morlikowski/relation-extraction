@@ -2,7 +2,7 @@
 
 Relation extraction is commonly conceptualized as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging possible entity mentions with a label indicating the type of entity that they refer to. Similarly, in anaphora resolution pairs of mentions are to be labeled as as coreferent or not.
 
-For both pipeline and joint models I will present where the authors take this general approach, giving an overview of their core ideas and architecture to highlight how they relate the subtasks of relation extraction.
+For both pipeline and joint models I will present where the authors take this general approach, giving an overview of their core ideas and relevances to highlight how they relate the subtasks of relation extraction.
 
 relations vs relation instances (section 3)
 
@@ -66,36 +66,26 @@ classifier needs to see negative data in training:
 
 ## Joint inference
 
-Singh et al. 2013
+Singh et al. (2013) present a system for information extraction which jointly models
+named entity recognition, relation extraction and coreference resolution. In contrast to
+pipeline systems, this prevents cascading errors, as all tasks can reciprocally share
+their information (see examples in 1.). The authors claim that their joint model supersedes previous systems, because
+it includes three central tasks of information extraction extraction, especially as coreference resolution
+often was not considered.
 
 ### Principle design and classification model
 
-What are graphical models?
+Singh et al. (2013) describe their system as a *probabilistic graphical model* (cf. Koller & Friedman 2009). In general, these models represent beliefs about specific aspects of the world and can be used in a variety of NLP tasks. Employing *probability theory* and statistics they give formal representations of uncertainty, means to draw inferences based on them and learn them from data. Often encoding probability distributions over a large number of random variables, *graphs* serve as an efficient data structure to deal with their inherent complexity, as the joint distribution of these variables can become exponentially large. Furthermore, templates can be used to describe families of models with similar structure (e.g. a model for NER in arbitrarily long sentences, not just in a seven words sentence). In sum, probabilistic graphical models represent probability distributions and interactions between random variables as graphs.
 
-https://www.coursera.org/learn/probabilistic-graphical-models/resources/7ct5V
+To formalize their classification models, Singh et al. (2009) use a special kind of probabilistic graphical model, so-called *factor graphs*. A factor graph splits the joint probability distribution of a number of random variables into a product of individual factors, i.e. a bipartite graph with factors and random variables that gives a factorization of their joint probability distribution function by connecting each factor and its input random variables. *Factors* are functions that map a set of random variables to a real value. In the context of classification, a factor can be defined as a (log-linear) combination of model parameters (which are learned from data) and feature functions (which transform input variables into feature values). Factors depend on labels and input variables, so that the whole graph models their joint probability.
 
-model (declarative representation separates model and algorithm)
-*probabilistic* (deal with uncertainty due to noise, partial knowledge, phenomena not covered)
-probability theory and statistics gives clear representation of uncertainty, tools to reason about these and learn
-from data.
-*graphical* computer science, probability distributions over a large number of random variables (each capturing to one aspect of the world), joint distribution of these variables are exponentially large, so suitable data structures are necessary, random variables as nodes.
+The authors first present isolated probabilistic graphical models for entity recognition, relation extraction and coreference resolution.
+The entity tagging model takes a token (i.e. a potential mention) as fixed variable and returns an entity label. Both other models take two entity mentions and their predicted tags as input and return a relation label or boolean value (coreferent or not) respectively. The authors then present a joint graphical model for these tasks that is structurally a combination of the single models.
+While the individual models encoded a probability distribution over a single type of labels (e.g. NE tags), the model now gives the unnormalized joint probability distribution over all three tasks. Thus, only the potential mentions are considered to be fixed input, so that the model enables a bi-directional information flow between the tasks trough the entity labels and the respective factors.
 
-directed (Bayesian) and undirected (Markov) graphs
+### Features and training
 
-
-
-factor graph that splits the probability distribution of a label given a set of
-features.
-
-factors are functions that map a set of random variables to a real value
-
-Describe the isolated and joint graphical models
-
-"unnormalized joint probability distribution over all three tasks"
-
-"bi-directional information flow between the tasks"
-
-
+Problem of inference in "loopy" graphical model
 
 - entity recognition
 
@@ -108,9 +98,8 @@ features from Zhou et al. 2005
 
 - coreference resolution
 
-### Features and training
-
-Problem of inference in "loopy" graphical model
+"The features are based on Soon et al. [24]
+and Bengston and Roth [2]"
 
 Do they use the same features as Mintz et al.?
 
