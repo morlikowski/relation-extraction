@@ -80,28 +80,58 @@ Singh et al. (2013) describe their system as a *probabilistic graphical model* (
 To formalize their classification models, Singh et al. (2009) use a special kind of probabilistic graphical model, so-called *factor graphs*. A factor graph splits the joint probability distribution of a number of random variables into a product of individual factors, i.e. a bipartite graph with factors and random variables that gives a factorization of their joint probability distribution function by connecting each factor and its input random variables. *Factors* are functions that map a set of random variables to a real value. In the context of classification, a factor can be defined as a (log-linear) combination of model parameters (which are learned from data) and feature functions (which transform input variables into feature values). Factors depend on labels and input variables, so that the whole graph models their joint probability.
 
 The authors first present isolated probabilistic graphical models for entity recognition, relation extraction and coreference resolution.
-The entity tagging model takes a token (i.e. a potential mention) as fixed variable and returns an entity label. Both other models take two entity mentions and their predicted tags as input and return a relation label or boolean value (coreferent or not) respectively. The authors then present a joint graphical model for these tasks that is structurally a combination of the single models.
+The entity tagging model takes a potential mention as fixed variable and returns an entity label. Both other models take two entity mentions and their predicted tags as input and return a relation label or boolean value (coreferent or not) respectively. The authors then present a joint graphical model for these tasks that is structurally a combination of the single models.
 While the individual models encoded a probability distribution over a single type of labels (e.g. NE tags), the model now gives the unnormalized joint probability distribution over all three tasks. Thus, only the potential mentions are considered to be fixed input, so that the model enables a bi-directional information flow between the tasks trough the entity labels and the respective factors.
 
 ### Features and training
 
-Problem of inference in "loopy" graphical model
+As the presented joint model has a complex and 'loopy' graph structure (i.e. it is not a tree), estimating the model parameters from training data is computationally intractable using common techniques.
 
-- entity recognition
+Piecewise learning
 
-features from Ratinov and Roth (2009)
+Adapted belief propagation
 
+Our main extension stems from the insight that during inference in NLP models, most of the
+variable marginals often peak during the initial stages of inference,
+without changing substantially during the rest of the course of in-
+ference. Detecting these low-entropy marginals in earlier phases
+and fixing to their high-probability values provides benefits to belief
+propagation. First, since the domain now contains only a single
+value, the factors that neighbor the variable can marginalize much
+more efficiently. Second, these fixed variables result in fewer cycles
+in the model and allow decomposition of the model into independent
+inference problems by partitioning at these fixed variables. Lastly,
+factors that only neighbor fixed variables can be effectively removed
+during inference, reducing the amount of messages that are passed.
+To employ these benefits of value sparsity in belief propagation,
+we examine the marginals of all the variables after every iteration
+of message passing. When the probability of a value for a variable
+goes above a predetermined probability threshold ζ, we set the value
+of the variable to its maxiSince belief propagation is not directly applicable, we adapt the
+algorithm for inference on our model. Our main extension stems
+from the insight that during inference in NLP models, most of the
+variable marginals often peak during the initial stages of inference,
+without changing substantially during the rest of the course of in-
+ference. Detecting these low-entropy marginals in earlier phases
+and fixing to their high-probability values provides benefits to belief
+propagation. First, since the domain now contains only a single
+value, the factors that neighbor the variable can marginalize much
+more efficiently. Second, these fixed variables result in fewer cycles
+in the model and allow decomposition of the model into independent
+inference problems by partitioning at these fixed variables. Lastly,
+factors that only neighbor fixed variables can be effectively removed
+during inference, reducing the amount of messages that are passed.
+To employ these benefits of value sparsity in belief propagation,
+we examine the marginals of all the variables after every iteration
+of message passing. When the probability of a value for a variable
+goes above a predetermined probability threshold ζ, we set the value
+of the variable to its maximum probability value, treating it as a
+fixed variable for the rest of inference. The parameter ζ directly
+controls the computational efficiency and accuracy trade-offmum probability value, treating it as a
+fixed variable for the rest of inference. The parameter ζ directly
+controls the computational efficiency and accuracy trade-off
 
-- relation extraction
-
-features from Zhou et al. 2005
-
-- coreference resolution
-
-"The features are based on Soon et al. [24]
-and Bengston and Roth [2]"
-
-Do they use the same features as Mintz et al.?
+The features used in the system are on the mention-, word- and sentence-level. However, feature engineering is not the focus of the paper, so feature definitions are taken from the literature (Ratinov and Roth 2009, Zhou et al. 2005, Soon et al. ????, Bengston and Roth ????).
 
 <!-- ### Evaluation
 
