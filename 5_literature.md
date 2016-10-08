@@ -20,6 +20,9 @@ the Association for Computational Linguistics (ACL), pages
 427–434, Ann Arbor, Michigan, June 2005. Association for
 Computational Linguistics.
 
+Koller, D., & Friedman, N. (2009). Probabilistic Graphical Models: Principles and Techniques (1.). Cambridge, MA: The MIT Press.
+
+
 https://plus.google.com/109936836907132434202/posts/bu3z2wVqcQc
 
 https://en.wikipedia.org/wiki/Factor_graph
