@@ -9,6 +9,8 @@ Joint Inference of Entities, Relations, and Coreference
 
 Google 2014
 
+Christopher Manning and Dan Klein. 2003. Optimization, maxent models, and conditional estimation without magic. In Proceedings of the 2003 Conference of the North American Chapter of the Association for Computational Linguistics on Human Language Technology: Tutorials - Volume 5 (NAACL-Tutorials '03), Vol. 5. Association for Computational Linguistics, Stroudsburg, PA, USA, 8-8. DOI=http://dx.doi.org/10.3115/1075168.1075176 
+
 L. Ratinov and D. Roth. Design challenges and misconceptions
 in named entity recognition. In Conference on Computational
 Natural Language Learning (CoNLL), pages 147–155. Associ-
