@@ -1,15 +1,14 @@
 
 # Backlog
 
-4 days
+3 days
 
-- Comparison: Come up with aspects to compare (21)
 - Conclusion (11)
 - Literature (8)
 
 # Current
 
-- Approaches, Joint: Training procedure (Learning and Inference) (13)
+- Comparison: Come up with aspects to compare and write them (21)
 
 # Finished
 - Structure
@@ -25,3 +24,4 @@
 - Approaches, Pipeline: Evaluation (8)
 - Approaches, Joint: Graphical Models (5)
 - Approaches, Joint: Isolated and joint models
+- Approaches, Joint: Training procedure (Learning and Inference) (13)
