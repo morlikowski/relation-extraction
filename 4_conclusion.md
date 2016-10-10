@@ -5,7 +5,7 @@ most interesting? Can you identify drawbacks/potential for
 improvements? Do you see different or related problems for
 these approaches?
 
-- compare different features used by Mintz et al. and Singh et al.
+- further compare different features used by Mintz et al. and Singh et al.
 
 - combine distant supervision and joint inference
 

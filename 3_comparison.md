@@ -1,29 +1,21 @@
 # Comparison
 
-- What are commonalities, what are differences between the
-models?
-- Can you make sense of the results (by tracing them back to
-the aspects discussed before)?
-
-## General focus: features vs. model
-
-While the Mintz et al. (2009) paper focuses on careful feature engineering and the generation
-of large amounts of training data using a knowledge base, Singh et al. (2013) turn their attention to
-a more capable model structure and matching efficient algorithms for training and inference.
+Having presented both papers, I would like to highlight a number of aspects in which the discussed systems differ or are alike. On a very general level, their particular perspective could be described as feature-centric vs. model-centric. While the Mintz et al. (2009) paper focuses on careful feature engineering (especially syntactic features) and the generation of large amounts of training data (as needed for their very specific features), Singh et al. (2013) turn their attention to a more capable model structure and matching efficient algorithms for training and inference. In the following, I will compare the two systems in regard to their respective approach to 1) the problem definition of relation extraction, 2) the relations between subtasks, 3) coreference and 4) their experimentation results.
 
 ## Problem description: classification
 
-Both papers conceptualize relation extraction as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a predefined set of relations. Entity tagging and coreference resolution are also addressed with classification models. Furthmore, despite their different vocabulary, both papers use a MaxEnt classifier for relation classification. While Mintz et al. frame their model as a logistic regression classifier and Singh et al. talk about log-linear combinations of parameters and features in their factor functions, both are essentially equal to a maximum entropy classifier as they are log-linear classifiers (cf. Manning & Klein 2003). A MaxEnt classifier can be viewed as a more general formulation of the logistic regression, since it follows a multinomial instead of a binomial distribution.
+Both papers conceptualize relation extraction as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a predefined set of relations. Entity tagging and coreference resolution are also addressed with classification models. Furthmore, despite their different vocabulary, both papers use the same class of model for relation classification. While Mintz et al. frame their model as a logistic regression classifier and Singh et al. talk about log-linear combinations of parameters and features in their factor functions, both are log-linear models (cf. Manning & Klein 2003).
 
 ## Pipeline vs. joint inference
 
-Even tough the distinction between pipeline and joint models has been drawn troughout the previous sections, it is worth to be explicitly addressed again here. As mentioned earlier, the pipeline approach models the subtasks as a series of consecutive models, while joint inference explicitly models the mutual dependencies between the subtasks. The essential difference is formulated by Singh et al. in terms of information flow. In a pipeline model, errors made in previous steps of the information extraction pipeline are just handed over to the next step, even if the following model could provide evidence to correct the previous prediction. Additionally, tasks have to be aligned linearly, even if their order is ambiguous (e.g. does coreference resolution happen before or after relation extraction?). In sum, information just flows in one direction. On the contrary, in a joint model, as exemplified by the discussed graphical model, the tasks are considered simultaneously, so that there is information flow in both directions for interdependent tasks.
+Even tough the distinction between pipeline and joint models has been drawn throughout the previous sections already, it is worth to discuss the differences explicitly. As mentioned, the pipeline approach models the relation extraction subtasks as a series of consecutive models, while joint inference explicitly models the mutual dependencies between the tasks. The essential difference is formulated by Singh et al. in terms of information flow. In a pipeline model, errors made in previous steps of the information extraction pipeline are just handed over to the next step, even if the following model could provide evidence to correct the previous prediction. This becomes apparent, if we recall that the features used by Mintz et al. often depend on the output of other classifiers, in particular a NE tagger. Additionally, tasks have to be aligned linearly, even if their order is ambiguous (e.g. does coreference resolution happen before or after relation extraction?). In sum, information just flows in one direction. On the contrary, in a joint model, as exemplified by the discussed graphical model, the tasks are considered simultaneously, so that there is information flow in both directions for interdependent tasks.
 
-Does this make a difference????
-"When looking at their results however, the difference seems not that big"
+Looking at Singh and colleagues' results, however, the general importance of bi-directional information flow seems debatable. While their joint model is able to improve performance on all subtasks compared to their isolated models (and is claimed to be competitive with the then state-of-the-art), performance measures are only increased by a few percent. This is without any doubt a useful improvement, but it would be interesting to analyze further, whether joint modeling beats pipeline approaches in any setting (feature configuration, domain, dataset etc.).
 
-## Compare results and evaluation
+## Coreference and level of features
 
-How to both models perform, can they be compared?
+It is interesting to note, that Mintz et al. (2009) do not include coreference as part of their presented system. This has the important consequence, that their system can only effectively model explicitly named entities that appear together in the same sentence. Accordingly, the features considered in their approach are on the sentence level, while Singh et al. necessarily have to include document-level features when modeling the relations of anaphoric expressions and the entities that they refer to.
 
-"So far evaluation has been ignored..."
+## Evaluation
+
+A direct comparison of evaluation results is not possible since the two systems are a) trained and evaluated on different datasets (ACE vs. Freebase/Wikipedia) and b) have different scope as Mintz et al. do not consider coreference. Looking at their precision and recall scores in isolation, however, the pipeline system in general has proportionally higher precision and lower recall, while the joint model is very balanced. This can presumably be related to the very specific conjugate features used by Mintz et al. (see 2.1.2).
