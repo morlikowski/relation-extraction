@@ -1,16 +1,9 @@
 # Conclusion
 
-- What is your opinion on these papers? Which aspects are
-most interesting? Can you identify drawbacks/potential for
-improvements? Do you see different or related problems for
-these approaches?
+I this paper I have presented and discussed a pipeline (Mintz et al. 2009) and a joint inference (Singh et al. 2013) approach to relation extraction. A comparison of both papers showed that the presented pipeline system is more feature-centric, has one-directional information flow, high precision and low recall, and does not model coreference, while the joint modeling example is more model-centric, has bi-directional information flow, balanced precision/recall and does model coreference. Both papers define relation extraction as a classification problem and use a log-linear classifier.
 
-- further compare different features used by Mintz et al. and Singh et al.
+Concluding, I would like to remark, that in my view both papers managed to convey their respective
+core idea in a convincing manner. Having read the papers, I think that both distant supervision and (joint) graphic models are useful concepts to keep in mind, as I take automatically generating training data and semantically clear modeling to be rather general concerns. Nevertheless, I got the impression that full joint modeling of three or more tasks is too computationally expensive, so that I am a bit skeptical of the actual range of applications of very complex probabilistic graphical models (although this was the first time that I have encountered them, so I may not be fully aware of the possibilities). In regard to distant supervision, I wonder how the system will perform if it is not evaluated on the same kind of text that the knowledge base was constructed on.
 
-- combine distant supervision and joint inference
-
-- instead of careful feature engineering deep learning for relation extraction which models dependency between entity
-tags, relations and coreference
-
-- data programming ( https://arxiv.org/abs/1605.07723 ) as alternative for distant supervision
-http://cs.stanford.edu/people/chrismre/papers/DDL_HILDA_2016.pdf
+For future work, it could be interesting to test a combination of distant supervision and joint inference, learning a joint model (including coreference) on a large (but probably noisy) training set derived from a knowledge base.
+I also wonder how the PGM joint model compares to deep neural network approaches, which are also able to perform tasks jointly and claim to reduce error propagation (e.g. Attardi 2015). This comparison would also be interesting, as both presented approaches rely on careful feature engineering, while deep networks are claimed to be less dependent on manual feature construction. In regard to automatic training data generation, the data programming approach (Ratner et al. 2016) is an interesting alternative/extension to distant supervision. In data programming, a user provides labeling functions that encode heuristics to generate a noisy training set. Then it is tried to denoise the training set by assuming a generative model that has generated the noise and incorporating noise-awareness into a discriminative classifier.
