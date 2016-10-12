@@ -1,14 +1,14 @@
 # Approaches
 
-Relation extraction is commonly conceptualized as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging possible entity mentions with a label indicating the type of entity that they refer to. Similarly, in anaphora resolution pairs of mentions are to be labeled as as coreferent or not.
+Relation extraction is commonly conceptualized as a classification problem: Depending on feature values, a given pair of entities is assigned to one of a fixed set of labels, such as "located-in" or "works-at". Likewise, entity recognition is understood as a classification task which entails tagging possible entity mentions with a label indicating the type of entity that they refer to. Similarly, in anaphora resolution pairs of mentions are to be labeled as coreferent or not.
 
 For both pipeline and joint models I will present where the authors take this general approach, giving an overview of their core ideas and relevances to highlight how they relate the subtasks of relation extraction.
 
 <!-- relations vs relation instances (section 3) -->
 
-## Pipeline
+## Pipeline model
 
-Mintz et al. (2009) present a pipeline approach to relation extraction which is built on the concept of *distant supervision*. In contrast to regular supervised classification, which uses labeled text data to train a classifier, distant supervision does not directly train on prelabeled text. Instead a knowledge base is used to identify entities, whose relation is known, in unlabeled text. These relation instances are then taken to train a classification model which assigns entity pairs to relation labels. Mintz et al. (2009) use the Freebase knowledge base (now acquired and integrated into other services, cf. Google 2014), which unifies structured semantic data from multiple sources, e.g. Wikipedia and MusicBrainz (music database). The authors claim that this has the advantage of being able to use more data and instances, as they do not have to be labeled manually, also allowing the system to be easily trained for different domains. Additionally, as relation names come from an existing knowledge base, they tend to be more canonical than ad-hoc defined ones.
+Mintz et al. (2009) present a pipeline approach to relation extraction which is built on the concept of *distant supervision*. In contrast to regular supervised classification, which uses labeled text data to train a classifier, distant supervision does not directly train on prelabeled text. Instead a knowledge base is used to identify entities, whose relation is known, in unlabeled text. These likely relation instances are then taken to train a classification model. Mintz et al. (2009) use the Freebase knowledge base (now acquired and integrated into other services, cf. Google 2014), which unifies structured semantic data from multiple sources, e.g. Wikipedia and MusicBrainz (music database). The authors claim that this has the advantage of being able to use more data and instances, as they do not have to be labeled manually, also allowing the system to be easily trained for different domains. Additionally, as relation names come from an existing knowledge base, they tend to be more canonical than ad-hoc defined ones.
 
 ### Principle design and classification model
 
@@ -16,77 +16,32 @@ The basic idea pursued by the authors is that Freebase can be used to identify e
 
 ### Features, training and inference
 
-Alongside named entity tags, the authors use lexical and syntactic features or a combination of both. *Entity labels* are inferred using the Stanford Named Entity Tagger (Finkel et al. 2005) which tags a token as person, location, organization, miscellaneous or not being a NE ("none"). The employed *lexical features* are 1) the sequence of words between the two entities, 2) the order of the NEs (which one is first), a window of *k* tokens 3) to the left of the first and 4) to the right of the second entity and the POS-tags (nouns, verbs, adverbs, adjectives, numbers, foreign words) of the 5) in-between and 6) surrounding words. For each window width *k* from 0 to 2 a combination of these properties is generated and forms a distinct feature. The *syntactic features* are generated using the dependency parser MINIPAR (Lin 1998). They include the dependency path between the two entities as well as a so-called window node for each entity, which is connected to the respective entity but not part of the dependency path. Each possible combination of window nodes and dependency path (including leaving out one or both nodes) yields a single feature. The described features are not used separately, but in conjugation. Thus, two feature values are only identical, if all the described attributes have the same value. This results in very specific and therefore rare features, so that a large training set, as generated by distant supervision, is needed.
+Alongside named entity tags, the authors use lexical and syntactic features or a combination of both. *Entity labels* are inferred using the Stanford Named Entity Tagger (Finkel et al. 2005) which tags a token as person, location, organization, miscellaneous or not being a NE ("none"). The employed *lexical features* are 1) the sequence of words between the two entities, 2) the order of the NEs (which one is first), a window of *k* tokens 3) to the left of the first and 4) to the right of the second entity and the POS-tags (nouns, verbs, adverbs, adjectives, numbers, foreign words) of the 5) in-between and 6) surrounding words. For each window width *k* from 0 to 2 a combination of these properties is generated and forms a distinct feature. The *syntactic features* are generated using the dependency parser MINIPAR (Lin 1998). They include the dependency path between the two entities as well as a so-called window node for each entity, which is connected to the respective entity but not part of the dependency path. Each possible combination of window nodes and dependency path (including leaving out one or both nodes) yields a single feature. The described features are not used separately, but in conjugation. Thus, two feature values are only identical, if all the described attributes have the same value. This results in very specific and therefore rare features, so that a large training set, as generated by distant supervision, is needed for effective training.
 
 These combined features are then used to train a multi-class logistic regression classifier which learns weights that minimize the effect of noisy features. The resulting model takes an entity pair and a feature vector as input and gives the single most likely relation name (i.e. only one label per instance) and a confidence score as output.
 
 The described features highlight the system's pipeline character. The features used by the relation classifier depend on the output of the NE tagger, POS tagger and MINIPAR. In additon, during training the system chunks consecutive words with the same entity type, if this is consistent with the parse tree. Thus, recognized NEs' boundaries also depend on the parser's performance in a pipeline manner.
-<!---
-### Training
 
-Implementation
-Text data
-- sentence-tokenized (!) Wikipedia dump (1.8 million articles, ø 14.3 sentences per article)
-- relatively up-to-date and explicit text
-- Freebase entities likely to appear (since it is based on Wikipedia)
-
-
-A note on Training
-classifier needs to see negative data in training:
- - randomly select entity pairs not included in any Freebase relation (accepting false negatives)
- - build feature vector for 'unrelated' relation from these entities
- - random 1% sample of unrelated entities as negative samples (by contrast 98.7% of extracted entities are unrelated)
--->
-<!--### Evaluation
- Test Step
-
-- rank relations by confidence score to determine n most likely new relations
-
-- Identify entities with a Named Entity Tagger
-- For each pair of entities
--Extract Features
--Append Features for same pair
-- Classifier returns the most likely relation and a confidence score for each entity pair
-
-
- Testing and evaluation
- - only extract relations not already in training data
- Held-out evaluationgit
- - half of the instances *for each relation* not used in training, used for comparison
- - precision vs recall for lexical, syntactical or both feature types:
-   - combination of lexical and syntactic features performs best
-
- Human evaluation
- - Amazon Mechanical Turk
- - 100 instances on different levels of recall with lexical, syntactical or both feature types
-   - mixed result, combination seems to be slightly better
--->
-
-
-## Joint inference
+## Joint model
 
 Singh et al. (2013) present a system for information extraction which jointly models
-named entity recognition, relation extraction and coreference resolution. In contrast to
+named entity tagging, relation extraction and coreference resolution. In contrast to
 pipeline systems, this allows all tasks to reciprocally share their information (see examples in 1.). The authors claim that their joint model supersedes previous systems, because it includes three central tasks of information extraction extraction, especially as coreference resolution often was not considered.
 
 ### Principle design and classification model
 
-Singh et al. (2013) describe their system as a *probabilistic graphical model* (cf. Koller & Friedman 2009). In general, these models represent beliefs about specific aspects of the world and can be used in a variety of NLP tasks. Employing *probability theory* and statistics they give formal representations of uncertainty, means to draw inferences based on them and learn them from data. Often encoding probability distributions over a large number of random variables, *graphs* serve as an efficient data structure to deal with their inherent complexity, as the joint distribution of these variables can become exponentially large. Furthermore, templates can be used to describe families of models with similar structure (e.g. a model for NER in arbitrarily long sentences, not just in a seven words sentence). In sum, probabilistic graphical models represent probability distributions and interactions between random variables as graphs.
+Singh et al. (2013) describe their system as a *probabilistic graphical model* (cf. Koller & Friedman 2009). In general, these models represent beliefs about specific aspects of the world and can be used in a variety of NLP tasks. Employing *probability theory* and statistics they give formal representations of uncertainty, means to draw inferences based on them and learn them from data. Often encoding probability distributions over a large number of random variables, *graphs* serve as an efficient data structure to deal with their inherent complexity, as the number of combinations in the joint distribution of these variables can become exponentially large. Furthermore, templates can be used to describe families of models with similar structure (e.g. a model for NER in arbitrarily long sentences, not just in a seven words sentence). In sum, probabilistic graphical models represent probability distributions and interactions between random variables as graphs.
 
-To formalize their classification models, Singh et al. (2009) use a special kind of probabilistic graphical model, so-called *factor graphs*. A factor graph splits the joint probability distribution of a number of random variables into a product of individual factors, i.e. a bipartite graph with factors and random variables that gives a factorization of their joint probability distribution function by connecting each factor and its input random variables. *Factors* are functions that map a set of random variables to a real value. In the context of classification, factors are often defined as a (log-linear) combination of model parameters (which are learned from data) and feature functions (which transform input variables into feature values). This formulation corresponds to a maximum entropy model. Factors include label and input variables, so that the whole graph models their joint probability. To classify an example then means to calculate the marginal probability of each label node value given the input node values for that example, which are treated as fixed values.
+To formalize their classification models, Singh et al. (2009) use a special kind of probabilistic graphical model, so-called *factor graphs*. A factor graph splits the joint probability distribution of a number of random variables into a product of individual factors, i.e. a bipartite graph with factors and random variables that gives a factorization of their joint probability distribution function by connecting each factor node and its input random variable nodes. *Factors* are functions that map a set of random variables to a real value. In the context of classification, Singh and colleagues define their factors as a (log-linear) combination of model parameters (which are learned from data) and feature functions (which transform input variables into feature values). Factors include label and input variables, so that the whole graph models their joint probability. To classify an example then means to calculate the marginal probability of each label node value given the input node values for that example, which are treated as fixed values.
 
 The authors first present isolated probabilistic graphical models for entity recognition, relation extraction and coreference resolution.
 The entity tagging model takes a potential mention as fixed variable and returns an entity label. Both other models take two entity mentions and their predicted tags as input and return a relation label or boolean value (coreferent or not) respectively. The authors then present a joint graphical model for these tasks that is structurally a combination of the single models.
-While the individual models encoded a probability distribution over a single type of labels (e.g. NE tags), the model now gives the unnormalized joint probability distribution over all three tasks. Thus, only the potential mentions are considered to be fixed input, so that the model enables a bi-directional information flow between the tasks trough the entity label nodes and the respective factors.
+While the individual models encoded a probability distribution over a single type of labels (e.g. NE tags), the model now gives the unnormalized joint probability distribution over all three tasks. Only the potential mentions are considered to be fixed input, so that the model enables a bi-directional information flow between the tasks trough the entity label nodes and the respective factors.
 
 ### Features, training and inference
 
-As the presented joint model is large and has a 'loopy' (i.e. it is not a tree) and complex and graph structure, estimating the model parameters from training data is computationally intractable using common techniques. The authors employ two separate strategies to make computation feasible. During training, they use *piecewise learning*, which means to decompose the model into distinct pieces that are learned separately. The authors treat each factor as a piece, for which parameters are learned that maximize the likelihood of the neighboring output nodes given the input. Additionally, the predicted entity tag probabilities are treated as fixed input when training the relation extraction and coreference resolution factors. While this makes the model more 'pipeline-like', the authors point out that it nevertheless represents the joint probability over all three information extraction tasks.
+As the presented joint model is large and has a 'loopy' (i.e. not a tree) and complex graph structure, estimating the model parameters from training data and inference are computationally intractable using common techniques. The authors employ two separate strategies to make computation feasible. During training, they use *piecewise learning*, which means to decompose the model into distinct pieces that are learned separately. The authors treat each factor as a piece, for which parameters are learned that maximize the likelihood of the neighboring output nodes given the input. Additionally, the predicted entity tag probabilities are treated as fixed input when training the relation extraction and coreference resolution factors. While this makes the model more 'pipeline-like', the authors point out that it nevertheless represents the joint probability over all three information extraction tasks and that these constraints are learned, not manually defined.
 
-For inference the authors propose an extension to the belief propagation algorithm which tries to *fix values of variables early*, because fixed values make the computation of the rest of the graph easier. They give the justification that, when considering graphical models for NLP, the marginals often peak during the first cycles of inference without changing much later. Thus, the authors fix the value of a variable to its most probable value if its probability exceeds a predefined threshold $\zeta$. Thereby, the threshold value allows to trade computational efficiency for accuracy.
+For inference the authors propose an extension to the belief propagation algorithm which tries to *fix values of variables early*, because fixed values reduce the computational complexity for the rest of the graph. They give the justification that, when considering graphical models for NLP, the marginal probabilities often rise near their maximum during the first cycles of inference without changing much later. Thus, the authors fix the value of a variable to its most probable value if its probability exceeds a predefined threshold. Thereby, the threshold value allows to trade computational efficiency for accuracy.
 
-The features used in the system are on the mention-, word- and sentence-level. However, feature engineering is not the focus of the paper, so feature definitions are taken from the literature (Ratinov and Roth 2009, Zhou et al. 2005, Soon et al. ????, Bengston and Roth ????).
-
-<!-- ### Evaluation
-
-Isolated models vs joint model -->
+The features used in the system are on the document-, mention-, word- and sentence-level. However, feature definitions are not detailed beyond giving references (Ratinov & Roth 2009, Zhou et al. 2005, Soon et al. 2001, Bengston & Roth 2008).
