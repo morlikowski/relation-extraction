@@ -26,7 +26,7 @@ The described features highlight the system's pipeline character. The features u
 
 Singh et al. (2013) present a system for information extraction which jointly models
 named entity tagging, relation extraction and coreference resolution. In contrast to
-pipeline systems, this allows all tasks to reciprocally share their information (see examples in 1.). The authors claim that their joint model supersedes previous systems, because it includes three central tasks of information extraction extraction, especially as coreference resolution often was not considered.
+pipeline systems, this allows all tasks to reciprocally share their information (see examples in 1.). The authors claim that their joint model supersedes previous systems, because it includes three central tasks of information extraction, especially as coreference resolution often was not considered.
 
 ### Principle design and classification model
 
